@@ -43,7 +43,7 @@ export const DefectDetect = () => {
             </div>
             Select Image to Scan:
             <input type="file" onChange={handleImageUpload} />
-            <button onClick={handlePredict}>Predict</button>
+            <button onClick={handlePredict}>Scan Image</button>
         </div>
     );
 };
