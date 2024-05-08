@@ -4,8 +4,7 @@ import { BlobServiceClient } from '@azure/storage-blob';
 import { saveAs } from 'file-saver';
 import FilePreview from '../components/FilePreview';
 import RecordList from '../components/RecordList';
-import ChatComponent from '../components/chatcomponent'; 
-
+import { ChatUI } from "../app/chat-ui/chat-ui";
 import Link from "next/link";
 
 import {
@@ -258,7 +257,7 @@ export default function Dashboard() {
         </div>
         <div>
         </div>
-        <ChatComponent />
+        <ChatUI />
       </main>
      
     </div>
