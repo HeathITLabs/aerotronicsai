@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@azure/ai-text-analytics": "^5.1.0",
+    "@azure/cognitiveservices-customvision-prediction": "^5.1.2",
+    "@azure/cognitiveservices-customvision-training": "^5.2.0",
     "@azure/openai": "^1.0.0-beta.12",
     "@azure/storage-blob": "^12.17.0",
     "@radix-ui/react-avatar": "^1.0.4",

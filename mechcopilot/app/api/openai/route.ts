@@ -10,7 +10,7 @@ export interface IChatGPTPayload {
  */
 const simpleOpenAIRequest = async (payload: IChatGPTPayload) => {
 
-  const client = new OpenAIClient(process.env.AZURE_OPEN_AI_BASE, new AzureKeyCredential(process.env.AZURE_OPEN_AI_KEY));
+  const client = new OpenAIClient(process.env.NEXT_PUBLIC_AZURE_OPEN_AI_BASE, new AzureKeyCredential(process.env.NEXT_PUBLIC_AZURE_OPEN_AI_KEY));
   const deploymentId = "gpt-35-turbo";
   var chatCompletion;
   const result = await client.getChatCompletions(deploymentId, [
@@ -20,7 +20,7 @@ const simpleOpenAIRequest = async (payload: IChatGPTPayload) => {
     { role: "user", content: "What's the name of the federal aircraft maintenance manual?" },
   ]);
   for (const choice of result.choices) {
-    chatCompletion =choice.message?.content;
+    chatCompletion = choice.message?.content;
   }
   console.dir(chatCompletion, { depth: null })
   return chatCompletion; // return the response from the AI, make sure to handle error cases

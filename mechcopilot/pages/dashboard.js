@@ -6,6 +6,8 @@ import FilePreview from '../components/FilePreview';
 import RecordList from '../components/RecordList';
 import { ChatUI } from "../app/chat-ui/chat-ui";
 import Link from "next/link";
+import { DefectDetect } from "../app/defect-detect/defect-detect";
+
 
 import {
   Activity,
@@ -48,6 +50,7 @@ import {
   TableRow,
 } from "../components/ui/table";
 
+
 export default function Dashboard() {
 
     const [blobs, setBlobs] = useState([]);
@@ -61,7 +64,7 @@ export default function Dashboard() {
   
       fetchBlobs();
     }, []);
-  
+
     const saveFile = async (blobName) => {
       const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.NEXT_PUBLIC_AZURE_STORAGE_CONNECTION_STRING);
       const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_CONTAINER_NAME);
@@ -240,24 +243,17 @@ export default function Dashboard() {
           <RecordList />
           <Card x-chunk="dashboard-01-chunk-5">
             <CardHeader>
-              <CardTitle>Active Issues</CardTitle>
+              <CardTitle>MechCopilot</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-8">
-             {blobs.map((blob, index) => (
-                <div className={"flex items-center gap-4 flex-col"} key={index}>
-                <h2>{blob.name}</h2>
-                <FilePreview
-                    fileType={blob.name.split('.').pop()}
-                    fileUrl={`https://storageaerotronics.blob.core.windows.net/aimaindata/${blob.name}`}
-                />
-                </div>
-            ))}
+            <DefectDetect />
+            <ChatUI />
             </CardContent>
           </Card>
         </div>
         <div>
         </div>
-        <ChatUI />
+     
       </main>
      
     </div>
