@@ -17,7 +17,7 @@ const simpleOpenAIRequest = async (payload: IChatGPTPayload) => {
     { role: "system", content: "You are a helpful aircraft manual assistant. You deliver concise data and links to relevant documentation." },
     { role: "user", content: "Can you help me?" },
     { role: "assistant", content: "How can I help you?" },
-    { role: "user", content: "What's the name of the federal aircraft maintenance manual?" },
+    { role: "user", content: payload.prompt },
   ]);
   for (const choice of result.choices) {
     chatCompletion = choice.message?.content;
