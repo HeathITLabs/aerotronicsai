@@ -6,7 +6,7 @@ const predictionKey = process.env.NEXT_PUBLIC_VISION_PREDICTION_KEY;
 const predictionResourceId = process.env.NEXT_PUBLIC_VISION_PREDICTION_RESOURCE_ID;
 const predictionEndpoint = process.env.NEXT_PUBLIC_VISION_PREDICTION_ENDPOINT;
 const predictionProjectId = process.env.NEXT_PUBLIC_VISION_PREDICTION_PROJECT_ID;
-const publishIterationName ="Iteration2";
+const publishIterationName = process.env.NEXT_PUBLIC_VISION_PREDICTION_ITERATION_NAME
 const predictor_credentials = new msRest.ApiKeyCredentials({ inHeader: { "Prediction-key": predictionKey } });
 const predictor = new PredictionApi.PredictionAPIClient(predictor_credentials, predictionEndpoint);
 
@@ -19,10 +19,11 @@ export const DefectDetect = () => {
     };
 
     const handlePredict = async () => {
-        if (imageFile) {
+        if (imageFile instanceof Blob) {
             try {
                 const res = await predictor.detectImage(predictionProjectId, publishIterationName, imageFile);
                 setResults(res);
+                console.dir(res);
             } catch (error) {
                 console.error('Error classifying image:', error);
             }
@@ -31,22 +32,33 @@ export const DefectDetect = () => {
         }
     };
 
-    const renderPrediction = (predictedResult) => (
-        <div key={predictedResult.tagName}>
-            <p>{predictedResult.tagName}: {(predictedResult.probability * 100.0).toFixed(2)}%</p>
+    const renderPrediction = (predictedResult) => {
+        if (predictedResult.tagName !== 'defect') {
+            return null;
+        }
+        var defectCount = 1;
+        const boundingBox = predictedResult.boundingBox;
+        const style = {
+            position: 'relative',
+            border: '4px solid red !important',
+            left: `${boundingBox.left * 100}%`,
+            top: `${boundingBox.top * 100}%`,
+            width: `${boundingBox.width * 100}%`,
+            height: `${boundingBox.height * 100}%`,
+            zIndex: 9999,
+            opacity: 1.0,
+        };
+
+        return <div key={predictedResult.tagName} style={style}></div>;
+    };
+    
+    return (
+        <div className="w-[400px] bg-slate-800 rounded-lg overflow-hidden text-slate-400 p-5 gap-5 flex flex-col border border-blue-800/40 shadow-2xl shadow-blue-900/30">
+            Select Image to Scan:
+            <input type="file" onChange={handleImageUpload} />
+            <button onClick={handlePredict}>Scan Image</button>
+            {imageFile && <img src={URL.createObjectURL(imageFile)} alt="Uploaded" />}
+            {results && results.predictions.map(renderPrediction)}
         </div>
     );
-
-   // if (!results) {
-   //     return <div>Loading...</div>;
-   // }
-
-   return (
-    <div className="w-[400px] bg-slate-800 rounded-lg overflow-hidden text-slate-400 p-5 gap-5 flex flex-col border border-blue-800/40 shadow-2xl shadow-blue-900/30">
-        Select Image to Scan:
-        <input type="file" onChange={handleImageUpload} />
-        <button onClick={handlePredict}>Scan Image</button>
-        {results && results.predictions.map(renderPrediction)}
-    </div>
-);
 };
