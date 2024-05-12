@@ -12,38 +12,33 @@ const predictor = new PredictionApi.PredictionAPIClient(predictor_credentials, p
 
 export const DefectDetect = () => {
     const [results, setResults] = useState(null);
-    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imageFile, setImageFile] = useState(null);
+    const [imageSize, setImageSize] = useState({ width: 0, height: 0 }); // Store image dimensions
 
-    const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
-
-    const handleImageLoad = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
-      setImageSize({
-        width: event.currentTarget.naturalWidth,
-        height: event.currentTarget.naturalHeight,
-      });
+    const handleFileChange = (event) => {
+        if (event.target.files) {
+            setImageFile(event.target.files[0]);
+        }
     };
 
-    const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-      if (event.target.files) {
-        setImageFile(event.target.files[0]);
-      }
+    const handleImageLoad = (event) => {
+        const containerWidth = 400; // Adjust this based on your actual container width
+        const naturalWidth = event.target.naturalWidth;
+        const naturalHeight = event.target.naturalHeight;
+        const scalingFactor = containerWidth / naturalWidth;
+        const displayedWidth = containerWidth; // Full width of the container
+        const displayedHeight = naturalHeight * scalingFactor; // Scaled height based on the width
+    
+        setImageSize({ width: displayedWidth, height: displayedHeight });
     };
+    
 
     const handlePredict = async () => {
         if (imageFile instanceof Blob) {
             try {
                 const res = await predictor.detectImage(predictionProjectId, publishIterationName, imageFile);
-                 
-                // Filter out results that are not of tagName = 'defect'
-                 let defectResults = res.predictions.filter(prediction => prediction.tagName === 'defect');                
-                
-                 // Append the index to the tagName
-                 defectResults = defectResults.map((predictedResult, index) => ({
-                      ...predictedResult,
-                      tagName: `${predictedResult.tagName}-${index}`
-                  }));
-
-                 setResults(defectResults);
+                const defectResults = res.predictions.filter(prediction => prediction.tagName === 'defect');
+                setResults(defectResults);
                 console.dir(defectResults);
             } catch (error) {
                 console.error('Error classifying image:', error);
@@ -54,28 +49,29 @@ export const DefectDetect = () => {
     };
 
     const renderPrediction = (predictedResult, index) => {
-        if (predictedResult.tagName !== 'defect') {
-            return null;
-        }
         const boundingBox = predictedResult.boundingBox;
         const style = {
-            position: 'relative',
-            border: '42px solid red !important',
-            left: `${boundingBox.left * 100}%`,
-            top: `${boundingBox.top * 100}%`,
-            width: `${boundingBox.width * 100}%`,
-            height: `${boundingBox.height * 100}%`,
+            position: 'absolute',
+            border: '4px solid red',
+            left: `${boundingBox.left * imageSize.width}px`,
+            top: `${boundingBox.top * imageSize.height}px`,
+            width: `${boundingBox.width * imageSize.width}px`,
+            height: `${boundingBox.height * imageSize.height}px`,
         };
-
-        return <div key={`${predictedResult.tagName}`} style={style}></div>;    };
+    
+        return <div key={index} style={style}></div>;
+    };
     
     return (
-        <div className="w-[400px] bg-slate-800 rounded-lg overflow-hidden text-slate-400 p-5 gap-5 flex flex-col border border-blue-800/40 shadow-2xl shadow-blue-900/30">
-          Select Image to Scan:
-          <input type="file" onChange={handleFileChange} />
-          <button onClick={handlePredict}>Scan Image</button>
-          {imageFile && <img src={URL.createObjectURL(imageFile)} onLoad={handleImageLoad} />}
-          {results && results.predictions && results.predictions.map((predictedResult, index) => renderPrediction(predictedResult, index))}
+        <div style={{ position: 'relative', width: 'auto', height: 'auto' }}>
+            Select Image to Scan:
+            <input type="file" onChange={handleFileChange} />
+            <button onClick={handlePredict}>Scan Image</button>
+            {imageFile && (
+                <img src={URL.createObjectURL(imageFile)} alt="Preview" onLoad={handleImageLoad}  />
+            )}
+            {imageSize.width > 0 && imageSize.height > 0 && results && results.map(renderPrediction)}
         </div>
-      );
+    );
+    
 };
