@@ -1,13 +1,12 @@
 import RootLayout from "../app/layout";
-import { useEffect, useState } from 'react';
-import { BlobServiceClient } from '@azure/storage-blob';
-import { saveAs } from 'file-saver';
-import FilePreview from '../components/FilePreview';
-import RecordList from '../components/RecordList';
+import { useRef, useEffect, useState } from "react";
+import { BlobServiceClient } from "@azure/storage-blob";
+import { saveAs } from "file-saver";
+import FilePreview from "../components/FilePreview";
+import RecordList from "../components/RecordList";
 import { ChatUI } from "../app/chat-ui/chat-ui";
 import Link from "next/link";
 import { DefectDetect } from "../app/defect-detect/defect-detect";
-
 
 import {
   Activity,
@@ -50,29 +49,31 @@ import {
   TableRow,
 } from "../components/ui/table";
 
-
 export default function Dashboard() {
-
-    const [blobs, setBlobs] = useState([]);
-
-    useEffect(() => {
-      const fetchBlobs = async () => {
-        const response = await fetch('/api/blobs');
-        const data = await response.json();
-        setBlobs(data);
-      };
-  
-      fetchBlobs();
-    }, []);
-
-    const saveFile = async (blobName) => {
-      const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.NEXT_PUBLIC_AZURE_STORAGE_CONNECTION_STRING);
-      const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_CONTAINER_NAME);
-      const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-      const downloadBlockBlobResponse = await blockBlobClient.download(0);
-      const blob = await downloadBlockBlobResponse.blobBody;
-      saveAs(blob, blobName);
+  const [blobs, setBlobs] = useState([]);
+  const containerRef = useRef(null);
+  useEffect(() => {
+    const fetchBlobs = async () => {
+      const response = await fetch("/api/blobs");
+      const data = await response.json();
+      setBlobs(data);
     };
+
+    fetchBlobs();
+  }, []);
+
+  const saveFile = async (blobName) => {
+    const blobServiceClient = BlobServiceClient.fromConnectionString(
+      process.env.NEXT_PUBLIC_AZURE_STORAGE_CONNECTION_STRING
+    );
+    const containerClient = blobServiceClient.getContainerClient(
+      process.env.AZURE_CONTAINER_NAME
+    );
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+    const downloadBlockBlobResponse = await blockBlobClient.download(0);
+    const blob = await downloadBlockBlobResponse.blobBody;
+    saveAs(blob, blobName);
+  };
 
   return (
     <div className="bg-slate-800 flex min-h-screen w-full flex-col text-slate-400">
@@ -97,8 +98,7 @@ export default function Dashboard() {
           >
             Orders
           </Link>
-         
-          
+
           <Link
             href="#"
             className="text-muted-foreground transition-colors hover:text-foreground"
@@ -203,9 +203,7 @@ export default function Dashboard() {
           </Card>
           <Card x-chunk="dashboard-01-chunk-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Man/hrs
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Man/hrs</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -217,7 +215,9 @@ export default function Dashboard() {
           </Card>
           <Card x-chunk="dashboard-01-chunk-2">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Combined Operational Hours</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Combined Operational Hours
+              </CardTitle>
               <CreditCard className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -260,7 +260,6 @@ export default function Dashboard() {
         </div>
      
       </main>
-     
     </div>
   );
 }
