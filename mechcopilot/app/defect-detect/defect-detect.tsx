@@ -14,8 +14,13 @@ export const DefectDetect = () => {
     const [results, setResults] = useState(null);
     const [imageFile, setImageFile] = useState(null);
 
-    const handleImageUpload = event => {
-        setImageFile(event.target.files[0]);
+    const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+
+    const handleImageLoad = (event) => {
+      setImageSize({
+        width: event.target.naturalWidth,
+        height: event.target.naturalHeight,
+      });
     };
 
     const handlePredict = async () => {
@@ -45,8 +50,6 @@ export const DefectDetect = () => {
             top: `${boundingBox.top * 100}%`,
             width: `${boundingBox.width * 100}%`,
             height: `${boundingBox.height * 100}%`,
-            zIndex: 9999,
-            opacity: 1.0,
         };
 
         return <div key={predictedResult.tagName} style={style}></div>;
@@ -54,11 +57,11 @@ export const DefectDetect = () => {
     
     return (
         <div className="w-[400px] bg-slate-800 rounded-lg overflow-hidden text-slate-400 p-5 gap-5 flex flex-col border border-blue-800/40 shadow-2xl shadow-blue-900/30">
-            Select Image to Scan:
-            <input type="file" onChange={handleImageUpload} />
-            <button onClick={handlePredict}>Scan Image</button>
-            {imageFile && <img src={URL.createObjectURL(imageFile)} alt="Uploaded" />}
-            {results && results.predictions.map(renderPrediction)}
+          Select Image to Scan:
+          <input type="file" onChange={handleImageLoad} />
+          <button onClick={handlePredict}>Scan Image</button>
+          {imageFile && <img src={URL.createObjectURL(imageFile)} alt="Uploaded" onLoad={handleImageLoad} />}
+          {results && results.predictions.map(renderPrediction)}
         </div>
-    );
+      );
 };
