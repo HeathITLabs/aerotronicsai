@@ -1,5 +1,5 @@
 import RootLayout from "../app/layout";
-import { useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { BlobServiceClient } from "@azure/storage-blob";
 import { saveAs } from "file-saver";
 import FilePreview from "../components/FilePreview";
@@ -51,7 +51,7 @@ import {
 
 export default function Dashboard() {
   const [blobs, setBlobs] = useState([]);
-
+  const containerRef = useRef(null);
   useEffect(() => {
     const fetchBlobs = async () => {
       const response = await fetch("/api/blobs");
@@ -245,7 +245,8 @@ export default function Dashboard() {
               <CardTitle>MechCopilot</CardTitle>
             </CardHeader>
             <CardContent>
-              <DefectDetect />
+              <DefectDetect containerRef={containerRef}/>
+              <ChatUI />
             </CardContent>
           </Card>
         </div>

@@ -24,7 +24,7 @@ export const ChatUI = () => {
   };
 
   return (
-    <div className="w-[400px] bg-slate-800 rounded-lg overflow-hidden text-slate-400 p-5 gap-5 flex flex-col border border-blue-800/40 shadow-2xl shadow-blue-900/30">
+    <div className="w-full bg-slate-800 rounded-lg overflow-hidden text-slate-400 p-5 gap-5 flex flex-col border border-blue-800/40 shadow-2xl shadow-blue-900/30">
       <Header />
       <div className="text-slate-50 max-h-[50vh] overflow-y-auto">
         {response}
