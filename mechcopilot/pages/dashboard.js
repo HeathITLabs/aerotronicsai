@@ -75,7 +75,7 @@ export default function Dashboard() {
     };
 
   return (
-    <div className="flex min-h-screen w-full flex-col">
+    <div className="bg-slate-800 flex min-h-screen w-full flex-col text-slate-400">
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <Link
@@ -186,6 +186,7 @@ export default function Dashboard() {
         </div>
       </header>
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+
         <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
           <Card x-chunk="dashboard-01-chunk-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -239,19 +240,23 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
-        <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-          <RecordList />
-          <Card x-chunk="dashboard-01-chunk-5">
-            <CardHeader>
-              <CardTitle>MechCopilot</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-8">
+
+        <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3 flex-grow">
+          
+          <Card x-chunk="dashboard-01-chunk-6" className="col-span-2"> 
             <DefectDetect />
+          </Card>
+          <Card x-chunk="dashboard-01-chunk-5" className="flex flex-col">
+            <CardHeader className="flex flex-row justify-between items-center">
+              <CardTitle className="flex">MechCopilot Chat</CardTitle>
+              <div className="cursor-pointer outline outline-1 outline-offset-4 outline-slate-800 text-white gap-2 items-center border border-x-slate-700 border-b-slate-700 border-t-slate-600 bg-slate-900 shadow-md justify-center flex rounded-full p-2">
+                <img src="/azure.svg" alt="azure logo" />
+              </div>
+            </CardHeader>
+            <CardContent className="grid gap-8 flex-grow">
             <ChatUI />
             </CardContent>
           </Card>
-        </div>
-        <div>
         </div>
      
       </main>
