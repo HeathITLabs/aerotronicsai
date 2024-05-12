@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { IChatGPTPayload } from "../api/openai/route";
 
-import { Header } from "./header";
+// import { Header } from "./header";
 import { PromptInput } from "./prompt-input";
 
 export const ChatUI = () => {
@@ -24,8 +24,7 @@ export const ChatUI = () => {
   };
 
   return (
-    <div className="w-full bg-slate-800 rounded-lg overflow-hidden text-slate-400 p-5 gap-5 flex flex-col border border-blue-800/40 shadow-2xl shadow-blue-900/30">
-      <Header />
+    <div className="overflow-hidden text-slate-400 p-5 gap-5 flex flex-col justify-end">
       <div className="text-slate-50 max-h-[50vh] overflow-y-auto">
         {response}
       </div>
