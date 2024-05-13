@@ -52,7 +52,11 @@ export const DefectDetect = () => {
             height: `${boundingBox.height * 100}%`,
         };
 
-        return <div key={predictedResult.tagName} style={style}></div>;
+        return (
+            <div key={predictedResult.tagName} style={style}>
+              <img src="/red-arrow-down.svg" alt="defect arrow" style={{ width: '100%', height: '100%' }} />
+            </div>
+          );
     };
     
     return (
