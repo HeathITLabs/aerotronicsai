@@ -1,13 +1,12 @@
 import RootLayout from "../app/layout";
-import { useEffect, useState } from 'react';
-import { BlobServiceClient } from '@azure/storage-blob';
-import { saveAs } from 'file-saver';
-import FilePreview from '../components/FilePreview';
-import RecordList from '../components/RecordList';
+import { useRef, useEffect, useState } from "react";
+import { BlobServiceClient } from "@azure/storage-blob";
+import { saveAs } from "file-saver";
+import FilePreview from "../components/FilePreview";
+import RecordList from "../components/RecordList";
 import { ChatUI } from "../app/chat-ui/chat-ui";
 import Link from "next/link";
 import { DefectDetect } from "../app/defect-detect/defect-detect";
-
 
 import {
   Activity,
@@ -50,32 +49,34 @@ import {
   TableRow,
 } from "../components/ui/table";
 
-
 export default function Dashboard() {
-
-    const [blobs, setBlobs] = useState([]);
-
-    useEffect(() => {
-      const fetchBlobs = async () => {
-        const response = await fetch('/api/blobs');
-        const data = await response.json();
-        setBlobs(data);
-      };
-  
-      fetchBlobs();
-    }, []);
-
-    const saveFile = async (blobName) => {
-      const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.NEXT_PUBLIC_AZURE_STORAGE_CONNECTION_STRING);
-      const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_CONTAINER_NAME);
-      const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-      const downloadBlockBlobResponse = await blockBlobClient.download(0);
-      const blob = await downloadBlockBlobResponse.blobBody;
-      saveAs(blob, blobName);
+  const [blobs, setBlobs] = useState([]);
+  const containerRef = useRef(null);
+  useEffect(() => {
+    const fetchBlobs = async () => {
+      const response = await fetch("/api/blobs");
+      const data = await response.json();
+      setBlobs(data);
     };
 
+    fetchBlobs();
+  }, []);
+
+  const saveFile = async (blobName) => {
+    const blobServiceClient = BlobServiceClient.fromConnectionString(
+      process.env.NEXT_PUBLIC_AZURE_STORAGE_CONNECTION_STRING
+    );
+    const containerClient = blobServiceClient.getContainerClient(
+      process.env.AZURE_CONTAINER_NAME
+    );
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+    const downloadBlockBlobResponse = await blockBlobClient.download(0);
+    const blob = await downloadBlockBlobResponse.blobBody;
+    saveAs(blob, blobName);
+  };
+
   return (
-    <div className="flex min-h-screen w-full flex-col">
+    <div className="bg-slate-800 flex min-h-screen w-full flex-col text-slate-400">
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <Link
@@ -97,8 +98,7 @@ export default function Dashboard() {
           >
             Orders
           </Link>
-         
-          
+
           <Link
             href="#"
             className="text-muted-foreground transition-colors hover:text-foreground"
@@ -186,6 +186,7 @@ export default function Dashboard() {
         </div>
       </header>
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+
         <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
           <Card x-chunk="dashboard-01-chunk-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -202,9 +203,7 @@ export default function Dashboard() {
           </Card>
           <Card x-chunk="dashboard-01-chunk-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Man/hrs
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Man/hrs</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -216,7 +215,9 @@ export default function Dashboard() {
           </Card>
           <Card x-chunk="dashboard-01-chunk-2">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Combined Operational Hours</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Combined Operational Hours
+              </CardTitle>
               <CreditCard className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -239,23 +240,26 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
-        <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-          <RecordList />
-          <Card x-chunk="dashboard-01-chunk-5">
-            <CardHeader>
-              <CardTitle>MechCopilot</CardTitle>
+
+        <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3 flex-grow">
+          
+          <Card x-chunk="dashboard-01-chunk-6" className="col-span-2" ref={containerRef} > 
+            <DefectDetect containerRef={containerRef}/>
+          </Card>
+          <Card x-chunk="dashboard-01-chunk-5" className="flex flex-col">
+            <CardHeader className="flex flex-row justify-between items-center">
+              <CardTitle className="flex">MechCopilot Chat</CardTitle>
+              <div className="cursor-pointer outline outline-1 outline-offset-4 outline-slate-800 text-white gap-2 items-center border border-x-slate-700 border-b-slate-700 border-t-slate-600 bg-slate-900 shadow-md justify-center flex rounded-full p-2">
+                <img src="/azure.svg" alt="azure logo" />
+              </div>
             </CardHeader>
-            <CardContent className="grid gap-8">
-            <DefectDetect />
+            <CardContent className="grid gap-8 flex-grow">
             <ChatUI />
             </CardContent>
           </Card>
         </div>
-        <div>
-        </div>
      
       </main>
-     
     </div>
   );
 }
