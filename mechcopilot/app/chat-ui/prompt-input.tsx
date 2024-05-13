@@ -1,6 +1,7 @@
 "use client";
 
 import { FC, FormEvent } from "react";
+import { useState } from "react";
 
 interface Props {
   onSubmit: (prompt: string) => void;
@@ -8,12 +9,16 @@ interface Props {
 }
 
 export const PromptInput: FC<Props> = (props) => {
+
+  const [responses, setResponses] = useState<string[]>([]);
+
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const prompt = formData.get("message") as string;
     if (prompt.length === 0 || props.isLoading) return;
     props.onSubmit(prompt);
+    e.currentTarget.reset();
   };
 
   return (
