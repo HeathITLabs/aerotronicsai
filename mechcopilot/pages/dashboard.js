@@ -243,8 +243,8 @@ export default function Dashboard() {
 
         <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3 flex-grow">
           
-          <Card x-chunk="dashboard-01-chunk-6" className="col-span-2"> 
-            <DefectDetect />
+          <Card x-chunk="dashboard-01-chunk-6" className="col-span-2" ref={containerRef} > 
+            <DefectDetect containerRef={containerRef}/>
           </Card>
           <Card x-chunk="dashboard-01-chunk-5" className="flex flex-col">
             <CardHeader className="flex flex-row justify-between items-center">

@@ -57,8 +57,12 @@ export const DefectDetect = ({ containerRef }) => {
             width: `${boundingBox.width * 100}%`,  // Calculate width as a pixel value
             height: `${boundingBox.height * 100}%`,  // Calculate height as a pixel value
         };
-    
-        return <div key={index} style={style}></div>;
+
+        return (
+            <div key={predictedResult.tagName} style={style}>
+              <img src="/red-arrow-down.svg" alt="defect arrow" style={{ width: '100%', height: '100%' }} />
+            </div>
+          );
     };
     
     return (
