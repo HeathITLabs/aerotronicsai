@@ -66,10 +66,17 @@ export const DefectDetect = ({ containerRef }) => {
     };
     
     return (
-        <div className="w-full bg-slate-800 rounded-lg overflow-hidden text-slate-400 p-5 gap-5 flex flex-col border border-blue-800/40 shadow-2xl shadow-blue-900/30" style={{ position: 'relative', width: 'auto', height: 'auto', padding: 0,margin: 0 }}>
-            Select Image to Scan:
-            <input type="file" onChange={handleFileChange} />
-            <button onClick={handlePredict}>Scan Image</button>
+        <div className="w-full bg-slate-800 rounded-lg overflow-hidden text-slate-400 p-5 gap-5 flex flex-col border-0" style={{ position: 'relative', width: 'auto', height: 'auto', padding: 0,margin: 0 }}>
+
+        <div className="p-3">
+            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an Image to Scan:</label>
+            <input className="block text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" onChange={handleFileChange} type="file" />
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
+        </div>
+        {imageFile && 
+        (<button className="p-2 border-none rounded-lg bg-green-400 text-white self-center" onClick={handlePredict}>Scan Image</button>)
+        }
+           
             {imageFile && (
             <img src={URL.createObjectURL(imageFile)} alt="Preview" onLoad={handleImageLoad} style={{ width: '100%', display: 'block', margin: '0 auto' }} />            )}
             {imageSize.width > 0 && imageSize.height > 0 && results && results.map(renderPrediction)}

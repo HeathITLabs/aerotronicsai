@@ -53,6 +53,7 @@ export const ChatUI = () => {
           );
         }
       })}
+      {isLoading && <div>...</div>}
       <div ref={messagesEndRef} />
       </div>
 
@@ -61,6 +62,7 @@ export const ChatUI = () => {
         onSubmit={(prompt) => {
           promptChatGPT({ prompt });
           setResponses(prevResponses => [...prevResponses, {response: prompt, type: 'user'}]);
+          scrollToBottom();
         }
         }
       />
